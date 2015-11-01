@@ -1,0 +1,18 @@
+{
+  "name": "ap",
+  "version": "0.0.1",
+  "description": "experiment with angularplasmid",
+  "main": "dist/index.html",
+  "scripts": {
+	"test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Anton Kirshanov <maetchkin@gmail.com> (https://github.com/maetchkin)",
+  "license": "MIT",
+  "dependencies": {
+	"angular": "^1.3.12",
+	"angularplasmid": "^1.0.5",
+	"gulp-util": "^3.0.7",
+	"gulp-webserver": "^0.9.1",
+	"tail": "^0.4.0"
+  }
+}
