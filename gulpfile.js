@@ -7,17 +7,55 @@ var pkg         = require('./package.json'),
     debug       = require('./tasks/debug.js')(),
     path        = require('path');
 
+
+
 gulp.task(
-    'nginx',
+    'src',
+    function(cb) {
+        return gulp
+            .src(["**/angular.js","**/angularplasmid.complete.min.js"], {base: path.join(process.cwd(),"node_modules")})
+            .pipe(
+                gulp.dest(
+                    path.join(process.cwd(), "dist/app/static")
+                )
+            );
+    }
+);
+gulp.task(
+    'build',
+    ['src'],
+    function(cb) {
+        return gulp
+            .src("**", {base: path.join(process.cwd(),"app/src")})
+            .pipe(
+                gulp.dest(
+                    path.join(process.cwd(), "dist/app")
+                )
+            );
+    }
+);
+
+gulp.task(
+    'nginx-conf',
+    ['build'],
+    function(cb) {
+        debug("Create nginx config");
+        require("./tasks/server-nginx.js")(pkg.nginx);
+        cb();
+    }
+);
+
+gulp.task(
+    'nginx', ['nginx-conf'],
     function(cb) {
         var exec       = require('child_process').exec,
-            conf       = path.join(process.cwd(), "nginx.conf"),
-            error_log  = path.join(process.cwd(), "error.log"),
-            access_log = path.join(process.cwd(), "access.log"),
+            conf       = path.join(process.cwd(), pkg.nginx.dst),
+            error_log  = path.join(process.cwd(), pkg.nginx.config.errorlog),
+            access_log = path.join(process.cwd(), pkg.nginx.config.accesslog),
             child;
+
         debug('run nginx -c ' + conf);
 
-        return;
 
         process.on('SIGINT', function() {
             exec('pkill -f nginx',
@@ -41,7 +79,7 @@ gulp.task(
                         if (error !== null) {
                             throw error;
                         }
-                        gutil.log(gutil.colors.green.red("NGINX started on " /*+ profile.webserver.config.port*/ ));
+                        gutil.log(gutil.colors.green("NGINX started on " + pkg.nginx.config.host + ":" + pkg.nginx.config.port ));
                         var _keepalive  = setInterval(function() {}, 1000);
 
                         if(!gutil.env.d){
@@ -65,7 +103,7 @@ gulp.task(
                                     gutil.log(
                                         gutil.colors.bold.red("»"),
                                         gutil.colors.red($status, $uri),
-                                        "\n"+ debugOffset + $request_filename
+                                        "\n"+ "    " + $request_filename
                                     );
                                 } else {
                                     debug(
@@ -93,4 +131,4 @@ gulp.task(
 );
 
 
-gulp.task("default", ["nginx"/*"clean", "scriptsCore", "scriptsComplete"*/]);
+gulp.task("default", ["build", "nginx"/*"clean", "scriptsCore", "scriptsComplete"*/]);

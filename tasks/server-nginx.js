@@ -8,24 +8,22 @@ var pkg     = require('../package.json'),
     debug   = require('./debug.js')(gutil.env.d);
 
 module.exports = function(data){
-    var srcConf = path.join(data.src, "webservers", 'nginx.conf'),
-        dstConf = path.join(data.dst, "webservers", 'nginx.conf'),
-        tpl     = gutil.template(fs.readFileSync(srcConf, {encoding: 'utf8'})),
+    var srcConf = path.join(process.cwd(), data.src),
+        dstConf = path.join(process.cwd(), data.dst),
+        file    = fs.readFileSync(srcConf),
         opt     = data.config,
+        tpl     = gutil.template(file),
         res;
-    opt.file    = { path: srcConf };
-    opt.dst     = data.dst;
-    opt.staticRoute = pkg.directories.staticRoute;
-    opt.static = pkg.directories.static;
-    res = tpl(opt);
+
+    data.config.file = {path: srcConf};
+    data.config.cwd  = process.cwd();
+
+    res = tpl( data.config );
+
     debug("srcConf", gutil.colors.red(srcConf));
     debug("dstConf", gutil.colors.red(dstConf));
 
-    mkdirp.sync(path.join(data.dst, "webservers"));
-    fs.symlinkSync(
-        path.join(data.src, "webservers", "cert"),
-        path.join(data.dst, "webservers", "cert"),
-        "dir"
-    );
+    mkdirp.sync( path.dirname(data.dst) );
+
     fs.writeFileSync(dstConf, res, {"encoding": "utf8"});
 }
