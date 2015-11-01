@@ -6,7 +6,24 @@ var pkg         = require('./package.json'),
     Tail        = require('tail').Tail,
     debug       = require('./tasks/debug.js')(),
     del         = require('del'),
-    path        = require('path');
+    path        = require('path'),
+    archy       = require('gulp-archy'),
+    rename      = require("gulp-rename"),
+    archyDebug = function(label){
+        return archy(
+            {
+                prefix: '    ',
+                callback: function(tree){
+                    debug(
+                        gutil.colors.magenta(
+                            gutil.colors.yellow((label || '--label--')) + "\n" +
+                            tree.split('\n').slice(1).join('\n')
+                        )
+                    )
+                }
+            }
+        );
+    };
 
 
 
@@ -14,8 +31,8 @@ gulp.task(
     'clean',
     function(cb) {
         del.sync([
-            path.join(process.cwd(), "dist")+'/**',
-            path.join(process.cwd(), "dist")
+            path.join(process.cwd(), "dist/app")+'/**',
+            path.join(process.cwd(), "dist/app")
         ]);
         return cb();
     }
@@ -25,8 +42,25 @@ gulp.task(
     'src',
     ['clean'],
     function(cb) {
+
         return gulp
-            .src(["**/angularplasmid.complete.min.js"], {base: path.join(process.cwd(),"node_modules")})
+            .src(
+                [
+                    path.join(process.cwd(),"node_modules/angular/angular.js"),
+                    path.join(process.cwd(),"node_modules/angularplasmid/src/js/declare.js"),
+                    path.join(process.cwd(),"node_modules/angularplasmid/src/js/services.js"),
+                    path.join(process.cwd(),"node_modules/angularplasmid/src/js/directives.js"),
+                    //path.join(process.cwd(),"node_modules/angularplasmid/src/js/init.js"),
+                ]
+            )
+            .pipe(
+                rename(
+                    function(src){
+                        src.dirname = src.dirname.replace('node_modules/','');
+                    }
+                )
+            )
+            .pipe(archyDebug('src'))
             .pipe(
                 gulp.dest(
                     path.join(process.cwd(), "dist/app/static")
@@ -39,7 +73,18 @@ gulp.task(
     ['src'],
     function(cb) {
         return gulp
-            .src("**", {base: path.join(process.cwd(),"app/src")})
+            .src([path.join(process.cwd(), "app/**/*.{js,html,css}")])
+
+            .pipe(
+                rename(
+                    function(src){
+                        src.dirname = src.dirname.replace('src/','').replace('src','');
+                    }
+                )
+            )
+
+            .pipe(archyDebug('build'))
+
             .pipe(
                 gulp.dest(
                     path.join(process.cwd(), "dist/app")
@@ -59,7 +104,7 @@ gulp.task(
 );
 
 gulp.task(
-    'nginx', ['nginx-conf'],
+    'nginx',
     function(cb) {
         var exec       = require('child_process').exec,
             conf       = path.join(process.cwd(), pkg.nginx.dst),
@@ -143,5 +188,20 @@ gulp.task(
     }
 );
 
+gulp.task(
+    'watch',
+    function(cb) {
+        gulp
+            .watch(['app/**/*'])
+            .on(
+                'change',
+                function(event) {
+                    return gulp.start('build');
+                }
+            );
+        return cb();
+    }
+);
 
-gulp.task("default", ["build", "nginx"/*"clean", "scriptsCore", "scriptsComplete"*/]);
+gulp.task('run',        ['watch', 'nginx']);
+gulp.task('default',    ['build', 'nginx-conf']);

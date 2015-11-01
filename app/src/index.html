@@ -1,10 +1,17 @@
-<html>
+<!DOCTYPE html>
+<html ng-app="vixis" class="ng-scope">
     <head>
-        <script src="/static/angularplasmid/dist/angularplasmid.complete.min.js"></script>
+        <title>Experiment</title>
+        <script src="/static/angular.js"></script>
+        <script src="/js/index.js"></script>
+        <script src="/static/declare.js"></script>
+        <script src="/static/services.js"></script>
+        <script src="/static/directives.js"></script>
+        <scripty src="/static/init.js"></scripty>
     </head>
     <body>
         <style>
-            @import url("http://fonts.googleapis.com/css?family=Lato:300,400,700|Donegal+One|Source+Code+Pro:400");
+            @import url("http://fonts.googleapis.com/css?family=Lato:300,400,700|Donegal+One|Source+Code+Pro:400");/**/
             body {font-family: 'Lato';font-weight:400;}
             .boundary {stroke-dasharray:2,2;stroke-width:2px}
             .mdlabel {font-size:12px}
@@ -15,68 +22,39 @@
             .blue {fill:rgb(64,192,192)}
             .green {fill:rgb(64,192,64)}
             .gold {fill:rgb(192,128,64)}
+            .markerhover:hover {
+              stroke: #f00;
+              stroke-width: 2px;
+            }
         </style>
-        <plasmid sequencelength="360" plasmidheight="375" plasmidwidth="375">
-            <plasmidtrack trackstyle="fill:#ccc" width="5" radius="120"></plasmidtrack>
-            <plasmidtrack trackstyle="fill:rgba(225,225,225,0.5)" radius="110">
-                <tracklabel text="HSP70" labelstyle='font-size:20px;font-weight:400'></tracklabel>
-                <tracklabel text="360 bp" labelstyle='font-size:10px' vadjust="20"></tracklabel>
-                
-                <!-- draw the main markers and labels -->
-                <trackmarker start="50" end="95" markerstyle="fill:rgba(170,0,85,0.9)" arrowendlength="4" arrowstartlength="-4">
-                    <markerlabel type="path" class="mdlabel white" text="HSP70"></markerlabel>
-                </trackmarker>
-                <trackmarker start="120" end="190" markerstyle="fill:rgba(85,0,170,0.9)" arrowendlength="4" arrowstartlength="-4">
-                    <markerlabel type="path" class="mdlabel white" text="NF1 Promoter"></markerlabel>
-                </trackmarker>
-                <trackmarker start="200" end="230" markerstyle="fill:rgba(0,85,170,0.9)" arrowendlength="4" arrowstartlength="-4">
-                    <markerlabel type="path" class="mdlabel white" text="Sig"></markerlabel>
-                </trackmarker>
-                <trackmarker start="250" end="300" markerstyle="fill:rgba(85,170,0,0.9)" arrowendlength="4" arrowstartlength="-4">
-                    <markerlabel type="path" class="mdlabel white" text="ColE1 Ori"></markerlabel>
-                </trackmarker>
-                <trackmarker start="325" end="345" markerstyle="fill:rgba(170,85,0,0.9)" arrowendlength="4" arrowstartlength="-4">
-                    <markerlabel type="path" class="mdlabel white" text="P3"></markerlabel>
+
+    <div class="content container ng-scope" ng-controller="plasmidCtrl">
+
+        <plasmidapi name="api"></plasmidapi>
+        <plasmid sequencelength="{{sequence.length}}" plasmidheight="500" plasmidwidth="500" sequence="{{sequence}}">
+            <plasmidtrack trackstyle="fill:#ccc" width="3" radius="120"></plasmidtrack>
+            
+            <plasmidtrack trackstyle="fill:rgba(225,225,225,0.5)" radius="180">
+                <tracklabel text="Plasmid" labelstyle='font-size:20px;font-weight:400'></tracklabel>
+                <trackmarker
+                    markerclass="markerhover " markerclick="markerClick($event,$marker)"
+                    start="150" end="250" markerstyle="rgba(10, 22, 117, 0.28);"
+                    vadjust="-5"
+                    wadjust="30"
+                >
+                    <markerlabel type="path"  labelclass="markerlabel mdlabel blue"  text="primer"></markerlabel>
+                    <markerlabel labelclass="markerlabel mdlabel blue" text="clickable" type="path" style="fill:#999" vadjust="20"></markerlabel>
                 </trackmarker>
 
-                <!-- draw the marker regions -->
-                <trackmarker start="50" end="95" markerstyle="fill:rgba(255,221,238,0.6)" wadjust="-5" vadjust="25"></trackmarker>
-                <trackmarker start="120" end="190" markerstyle="fill:rgba(238,221,255,0.6)" wadjust="-5" vadjust="25"></trackmarker>
-                <trackmarker start="200" end="230" markerstyle="fill:rgba(221,238,255,0.6)" wadjust="-5" vadjust="25"></trackmarker>
-                <trackmarker start="250" end="300" markerstyle="fill:rgba(238,255,221,0.6)" wadjust="-5" vadjust="25"></trackmarker>
-                <trackmarker start="325" end="345" markerstyle="fill:rgba(255,238,221,0.6)" wadjust="-5" vadjust="25"></trackmarker>
-                
-
-                <!-- draw the region boundaries lines for each marker -->
-                <trackmarker start="50" markerstyle="stroke:rgba(128,64,64,0.8)" class="boundary" wadjust="20">
-                    <markerlabel class="smlabel red" text="50" vadjust="30"></markerlabel>
+                <!-- Sequencing Region -->
+                <trackmarker markerclass="markerhover" start="{{sequenceRegion.start}}" end="{{sequenceRegion.end}}" style="fill:rgba(0,128,0,0.1)" wadjust="30" markerclick="markerClick($event,$marker)">
+                    <markerlabel labelclass="regionlabel" text="Sequencing Region" type="path" style="fill:rgba(0,128,0,.6)" vadjust="40"></markerlabel>
                 </trackmarker>
-                <trackmarker start="95" markerstyle="stroke:rgba(128,64,64,0.8)" class="boundary" wadjust="20">
-                    <markerlabel class="smlabel red" text="95" vadjust="30"></markerlabel>
+                <trackmarker start="{{sequenceRegion.start}}" style="stroke:rgba(0,64,0,0.5);stroke-dasharray:3,1;" wadjust="30">
+                    <markerlabel labelclass="regionlabel" text="{{sequenceRegion.start}}" type="path" style="fill:rgba(0,128,0,.6)" valign="inner" vadjust="-5"></markerlabel>
                 </trackmarker>
-                <trackmarker start="120" markerstyle="stroke:rgba(128,64,128,0.8)" class="boundary" wadjust="20">
-                    <markerlabel class="smlabel purple" text="120" vadjust="30"></markerlabel>
-                </trackmarker>
-                <trackmarker start="190" markerstyle="stroke:rgba(128,64,128,0.8)" class="boundary" wadjust="20">
-                    <markerlabel class="smlabel purple" text="190" vadjust="30"></markerlabel>
-                </trackmarker>
-                <trackmarker start="200" markerstyle="stroke:rgba(64,128,128,0.8)" class="boundary" wadjust="20">
-                    <markerlabel class="smlabel blue" text="200" vadjust="30"></markerlabel>
-                </trackmarker>
-                <trackmarker start="230" markerstyle="stroke:rgba(64,128,128,0.8)" class="boundary" wadjust="20">
-                    <markerlabel class="smlabel blue" text="230" vadjust="35"></markerlabel>
-                </trackmarker>
-                <trackmarker start="250" markerstyle="stroke:rgba(64,128,64,0.8)" class="boundary" wadjust="20">
-                    <markerlabel class="smlabel green" text="250" vadjust="30"></markerlabel>
-                </trackmarker>
-                <trackmarker start="300" markerstyle="stroke:rgba(64,128,64,0.8)" class="boundary" wadjust="20">
-                    <markerlabel class="smlabel green" text="300" vadjust="30"></markerlabel>
-                </trackmarker>
-                <trackmarker start="325" markerstyle="stroke:rgba(128,128,64,0.8)" class="boundary" wadjust="20">
-                    <markerlabel class="smlabel gold" text="325" vadjust="30"></markerlabel>
-                </trackmarker>
-                <trackmarker start="345" markerstyle="stroke:rgba(128,128,64,0.8)" class="boundary" wadjust="20">
-                    <markerlabel class="smlabel gold" text="345" vadjust="30"></markerlabel>
+                <trackmarker start="{{sequenceRegion.end}}" style="stroke:rgba(0,64,0,0.5);stroke-dasharray:3,1;" wadjust="30">
+                    <markerlabel labelclick="labelClick($event,$label)" labelclass="regionlabel" text="{{sequenceRegion.end}}" type="path" style="fill:rgba(0,128,0,.6)" valign="inner" vadjust="-5"></markerlabel>
                 </trackmarker>
 
                 <!-- draw the scales -->
@@ -85,5 +63,25 @@
                 <trackscale interval="30" style="stroke:#f00" direction="in" showlabels="1" labelstyle="fill:#999;stroke:none;text-anchor:middle;alignment-baseline:middle;font-size:10px"></trackscale>
             </plasmidtrack>
         </plasmid>
+
+        <div id="markerpopup" class="panel panel-primary" ng-show="selectedmarker">
+            <div class="panel-heading">
+                <h1 id="markerpopupheader" class="panel-title">{{selectedmarker.labels[0].text}}</h1>
+            </div>
+            <div>
+                <div id="sequence" style="overflow-x: scroll; padding-bottom: 2em;">{{sequence}}</div>
+            </div>
+            <div id="markerpopuptext" class="panel-body">
+                <strong>[{{selectedmarker.start}}] Start - [{{selectedmarker.end}}] End</strong>
+                <br>
+                <div id="sequence" style="overflow-x: scroll; padding-bottom: 2em;">{{selectedmarker.sequence}}</div>
+            </div>
+        </div>
+    </div>
+
+    
+
+        
+
     </body>
 <html>
