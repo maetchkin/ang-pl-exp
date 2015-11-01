@@ -4,28 +4,29 @@
   "description": "experiment with angularplasmid",
   "main": "dist/index.html",
   "scripts": {
-	"test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Anton Kirshanov <maetchkin@gmail.com> (https://github.com/maetchkin)",
   "license": "MIT",
   "dependencies": {
-	"angular": "^1.3.12",
-	"angularplasmid": "^1.0.5",
-	"gulp": "^3.8.7",
-	"gulp-util": "^3.0.7",
-	"mkdirp": "^0.5.1",
-	"tail": "^0.4.0"
+    "angular": "^1.3.12",
+    "angularplasmid": "^1.0.5",
+    "del": "^2.0.2",
+    "gulp": "^3.8.7",
+    "gulp-util": "^3.0.7",
+    "mkdirp": "^0.5.1",
+    "tail": "^0.4.0"
   },
-  "nginx":{
-	"src": "app/config/nginx.conf",
-	"dst": "dist/server/nginx.conf",
-	"config": {
-		"port": "8099",
-		"host": "ang.local",
-		"pid": "nginx.pid",
-		"errorlog": "error.log",
-		"accesslog": "access.log",
-		"static": "dist/app/"
-	}
+  "nginx": {
+    "src": "app/config/nginx.conf",
+    "dst": "dist/server/nginx.conf",
+    "config": {
+      "port": "8099",
+      "host": "ang.local",
+      "pid": "nginx.pid",
+      "errorlog": "dist/server/error.log",
+      "accesslog": "dist/server/access.log",
+      "static": "dist/app/"
+    }
   }
 }

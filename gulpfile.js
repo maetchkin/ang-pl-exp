@@ -5,15 +5,28 @@ var pkg         = require('./package.json'),
     gutil       = require('gulp-util'),
     Tail        = require('tail').Tail,
     debug       = require('./tasks/debug.js')(),
+    del         = require('del'),
     path        = require('path');
 
 
 
 gulp.task(
+    'clean',
+    function(cb) {
+        del.sync([
+            path.join(process.cwd(), "dist")+'/**',
+            path.join(process.cwd(), "dist")
+        ]);
+        return cb();
+    }
+);
+
+gulp.task(
     'src',
+    ['clean'],
     function(cb) {
         return gulp
-            .src(["**/angular.js","**/angularplasmid.complete.min.js"], {base: path.join(process.cwd(),"node_modules")})
+            .src(["**/angularplasmid.complete.min.js"], {base: path.join(process.cwd(),"node_modules")})
             .pipe(
                 gulp.dest(
                     path.join(process.cwd(), "dist/app/static")
