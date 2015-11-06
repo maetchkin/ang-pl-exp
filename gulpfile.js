@@ -73,7 +73,7 @@ gulp.task(
     ['src'],
     function(cb) {
         return gulp
-            .src([path.join(process.cwd(), "app/**/*.{js,html,css}")])
+            .src([path.join(process.cwd(), "app/**/*.{js,html,css,json,fasta}")])
 
             .pipe(
                 rename(
