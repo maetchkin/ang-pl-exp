@@ -42,6 +42,12 @@
                 padding: 1em .5em;
                 color: blue;
             }
+            .set-label{
+                display: inline-block;
+                padding: 1em;
+                color: black;
+                font-size: 1.5em;
+            }
         </style>
 
     <div class="content container ng-scope" ng-controller="plasmidCtrl">
@@ -69,9 +75,11 @@
                 <strong>[{{selectedmarker.start}}] Start - [{{selectedmarker.end}}] End</strong>
                 <br>
                 <div>
+                    <span class="set-label">3`</span>
                     <span class="s3et" ng-repeat="s3et in s3 track by $index">{{s3et}}</span>
                 </div>
                 <div>
+                    <span class="set-label">5`</span>
                     <span class="s5et" ng-repeat="s5et in s5 track by $index">{{s5et}}</span>
                 </div>
             </div>
