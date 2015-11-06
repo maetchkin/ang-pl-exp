@@ -58,8 +58,9 @@ app.controller('plasmidCtrl', ['$http', '$scope', '$timeout', function plasmidCt
     $scope.label = 'loading...';
     $scope.primers = [];
 
-    $http.get('dna.json').success(
+    $http.jsonp('./dna.json').success(
         function(data) {
+
             $scope.data = data;
 
             $scope.description = 'data calculation';
