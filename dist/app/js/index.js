@@ -60,15 +60,11 @@ app.controller('plasmidCtrl', ['$http', '$scope', '$timeout', function plasmidCt
 
     $http.jsonp('./dna.json').success(
         function(data) {
-
             $scope.data = data;
-
             $scope.description = 'data calculation';
-
 
             setTimeout(
                 function(s3,s5){
-
                     $scope.label = $scope.data.id;
                     $scope.description = $scope.data.description;
 
@@ -79,67 +75,24 @@ app.controller('plasmidCtrl', ['$http', '$scope', '$timeout', function plasmidCt
                                     );
                     $scope.length = $scope.sequence.length;
                     $scope.interval = $scope.length / 12;
-
                     var m = Math.pow(10, ($scope.sequence.length + "").length - 2 );
-
                     $scope.interval = Math.floor( $scope.interval / m ) * m;
-
-                    var $scopeprimers = getPrimers($scope.sequence);
-
-
-                    $scope.primers = $scopeprimers/*[
-                        {
-                            start: 200,
-                            end: 550
-                        },
-
-                        {
-                            start: 800,
-                            end: 1550
-                        }
-                    ]*/;
-
-
+                    $scope.primers = getPrimers($scope.sequence);;
                     $scope.$apply();
-
-                    //console.log("$scopeprimers", $scopeprimers);
 
                 },
                 1000,
                 $scope.data.sequence[0].split(""),
                 $scope.data.sequence[1].split("")
-            )
-
+            );
         }
     );
 
-    //$scope.sequence = ["AACGCTGAAACTGTATGCTCGCAAACAGCTGTGAAGTCGCGGGTTTTAAATTACCAATCCTAAATGATAGATCTAGATCTAGATCTAGATTATCTTCACTAGATAAATTTGAGTGTTTTTACTAAGTTTTTATTTGGTGATTACTAAAATTTAAATTCTTAGTCAAATCCAAAATGGTAATAATAGCCCCCTGCAAAACTCGTTAGGAATGCGTCCATGCGAAAAGAGAGTTGCCACATGCGCGCAAAAATAATGAACATAGGTGTGTCAGCTGAGCGGTATTGGTGGAATTCAATTTTGGCTTTTTCATGCTTTTAAACGATTAAAAATGACCCGCGATGAGGATAATGGTTTTAGTGAATGGGTAAGATGTAGATAAAATGCTAAAAACATTGTACATAAACCAAACCTGCTCTTTTCAGGGCGGCTACTTCGAAGCCAAGAAATCTAAACTTGAGGAGCAGTTCGCTGCCGCCAGCGATCCATTTCGCAAGTCGGACCTCTTCCAAGGAATTTCTATATTTGTGAACGGCCGGACTGACCCTTCGGCGGATGAACTGAAGCGTATTATGATGGTGCACGGCGGGACCTTTCACCACTACGAAAGGAGCCACACGACGTACATAATAGCCTCCGTTCTGCCCGATGTGAAGGTCAGGAACATGAATCTCAGCAAGTTCATCAGCGCCAAGTGGGTGGTGGATTGTCTGGAGAAAAAGAAGATAGTAGACTACAAACCCTATCTGCTGTACACGAACCAGAAGACATCGCAGCCCATGCTCATCTTTGGGAAACCCAAAGACAACGGCGCAAATGAGAGCAAATCGGATGTGGAGCCGCCGAAAGATAAAGCGGAAGTGGAAGTAGACTCTACAAAAGATGAAACGCAAATGGAGTTGGGTGGCATTCTCAAGAATTTGCAGCAGGCTGTGGCCACTTCGCCGGAAAAGGAGGCCAGTGCATCAGAGAGCAAGATCACAAACTTATCCACCACCTCGAG"];
-
-    //$scope.featurePos = 216;
-
-    /*$scope.sequenceRegion = {
-        start : 850,
-        end : 1100
-    };
-
-    $scope.featureMarkers = [
-        {start : 482, end : 567, text : 'LEUII'},
-        {start : 585, end : 645, text : 'AMPR'},
-        {start : 661, end : 692, text : 'ADHI'}
-    ];
-
-    $scope.featureStart = $scope.featureMarkers[0].start - 20;
-    $scope.featureEnd = $scope.featureMarkers[$scope.featureMarkers.length-1].end + 20;
-*/
     $scope.markerClick = function(event, marker){
-        //,console.log(" >> ", marker, marker.start, marker.end);
         $scope.$apply(function(){
-
             console.log('$scope.data', $scope.data)
-
             $scope.s3 = $scope.data.sequence[0].substring(marker.start, marker.end).split('');
             $scope.s5 = $scope.data.sequence[1].substring(marker.start, marker.end).split('');
-
             $scope.selectedmarker = marker;
         });
     }

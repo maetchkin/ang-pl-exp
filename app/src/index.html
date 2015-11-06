@@ -60,8 +60,13 @@
                 <trackscale interval="{{interval/10}}" style='stroke:#999' ticksize="3" direction="in" ></trackscale>
                 <trackscale interval="{{interval}}" style="stroke:#f00" direction="in" showlabels="1" labelstyle="fill:#999;stroke:none;text-anchor:middle;alignment-baseline:middle;font-size:10px"></trackscale>
 
+                
+
+
                 <trackmarker markerclass="markerhover" ng-repeat="p in primers" start="{{p.start}}" end="{{p.end}}" style="fill:rgba(0,128,0,0.1)" wadjust="30" markerclick="markerClick($event,$marker)">
                     <markerlabel labelclass="regionlabel" text="Primer" type="path" style="fill:rgba(0,128,0,.6)" vadjust="40"></markerlabel>
+                    <markerlabel type="path" labelstyle="font-size:7px; font-weight:400; kerning:1.1" text="{{p.s3.join('')}}" halign="center" vadjust="5"></markerlabel>
+                    <markerlabel type="path" labelstyle="font-size:7px; font-weight:400; kerning:1.1" text="{{p.s5.join('')}}" halign="center" vadjust="-15"></markerlabel>
                 </trackmarker>
 
             </plasmidtrack>
@@ -69,11 +74,10 @@
 
         <div id="markerpopup" class="panel panel-primary" ng-show="selectedmarker">
             <div class="panel-heading">
-                <h1 id="markerpopupheader" class="panel-title">{{selectedmarker.labels[0].text}}</h1>
+                <h1 id="markerpopupheader" class="panel-title">{{selectedmarker.labels[0].text}} [{{selectedmarker.start}} - {{selectedmarker.end}}]</h1>
             </div>
             <div id="markerpopuptext" class="panel-body">
-                <strong>[{{selectedmarker.start}}] Start - [{{selectedmarker.end}}] End</strong>
-                <br>
+                <hr>
                 <div>
                     <span class="set-label">3`</span>
                     <span class="s3et" ng-repeat="s3et in s3 track by $index">{{s3et}}</span>
