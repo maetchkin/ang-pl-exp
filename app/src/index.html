@@ -1,99 +1,61 @@
 <!DOCTYPE html>
-<html ng-app="vixis" class="ng-scope">
+<html>
     <head>
         <title>Experiment</title>
-        <script src="./static/angular.js"></script>
-        <script src="./js/index.js"></script>
-        <script src="./static/declare.js"></script>
-        <script src="./static/services.js"></script>
-        <script src="./static/directives.js"></script>
-    </head>
-    <body>
-        <style>
-            @import url("http://fonts.googleapis.com/css?family=Lato:300,400,700|Donegal+One|Source+Code+Pro:400");/**/
-            body {font-family: 'Lato';font-weight:400;}
-            .boundary {stroke-dasharray:2,2;stroke-width:2px}
-            .mdlabel {font-size:12px}
-            .smlabel {font-size:8px}
-            .white {fill:#fff}
-            .red {fill:rgb(192,64,64)}
-            .purple {fill:rgb(192,64,192)}
-            .blue {fill:rgb(64,192,192)}
-            .green {fill:rgb(64,192,64)}
-            .gold {fill:rgb(192,128,64)}
-            .markerhover:hover {
-              stroke: #f00;
-              stroke-width: 2px;
-            }
-            .p-label{
-                font-size:20px;
-            }
 
-            .p-description{
-                font-size:13px;
-            }
-            .s3et{
-                display: inline-block;
-                padding: 1em .5em;
-                color: red;
-            }
-            .s5et{
-                display: inline-block;
-                padding: 1em .5em;
-                color: blue;
-            }
-            .set-label{
-                display: inline-block;
-                padding: 1em;
-                color: black;
-                font-size: 1.5em;
-            }
-        </style>
+                
+        <script src="./static/angular.js" type="text/javascript"></script>
+        <script src="./js/index.js" type="text/javascript"></script>
+        <script src="./static/declare.js" type="text/javascript"></script>
+        <script src="./static/services.js" type="text/javascript"></script>
+        <script src="./static/directives.js" type="text/javascript"></script>
+
+        <link rel="stylesheet" type="text/css" href="./static/bootstrap.css"/>
+        <link rel="stylesheet/less" type="text/css" href="./styles/styles.less"/>
+        <script src="./static/less.js" type="text/javascript"></script>
+
+    </head>
+    <body ng-app="vixis" class="ng-scope">
+
+    <div class="page-header">
+      <h1>Example <small>angularplasmid</small></h1>
+    </div>
 
     <div class="content container ng-scope" ng-controller="plasmidCtrl">
 
         <plasmidapi name="api"></plasmidapi>
-        <plasmid sequencelength="{{length}}" plasmidheight="500" plasmidwidth="500">
-            <plasmidtrack trackstyle="fill:rgba(225,225,225,0.5)" radius="180">
+
+        <plasmid sequencelength="{{length}}" plasmidheight="400" plasmidwidth="400">
+            <plasmidtrack trackstyle="fill:rgba(225,225,225,0.5)" radius="150">
                 <tracklabel text="{{label}}"        class="p-label"></tracklabel>
                 <tracklabel text="{{description}}"  class="p-description" vadjust="20"></tracklabel>
                 <trackscale interval="{{interval/10}}" style='stroke:#999' ticksize="3" direction="in" ></trackscale>
                 <trackscale interval="{{interval}}" style="stroke:#f00" direction="in" showlabels="1" labelstyle="fill:#999;stroke:none;text-anchor:middle;alignment-baseline:middle;font-size:10px"></trackscale>
-
-                
-
-
                 <trackmarker markerclass="markerhover" ng-repeat="p in primers" start="{{p.start}}" end="{{p.end}}" style="fill:rgba(0,128,0,0.1)" wadjust="30" markerclick="markerClick($event,$marker)">
                     <markerlabel labelclass="regionlabel" text="Primer" type="path" style="fill:rgba(0,128,0,.6)" vadjust="40"></markerlabel>
                     <markerlabel type="path" labelstyle="font-size:7px; font-weight:400; kerning:1.1" text="{{p.s3.join('')}}" halign="center" vadjust="5"></markerlabel>
                     <markerlabel type="path" labelstyle="font-size:7px; font-weight:400; kerning:1.1" text="{{p.s5.join('')}}" halign="center" vadjust="-15"></markerlabel>
                 </trackmarker>
-
             </plasmidtrack>
         </plasmid>
 
-        <div id="markerpopup" class="panel panel-primary" ng-show="selectedmarker">
+        <div class="panel panel-info" ng-show="selectedmarker">
             <div class="panel-heading">
                 <h1 id="markerpopupheader" class="panel-title">{{selectedmarker.labels[0].text}} [{{selectedmarker.start}} - {{selectedmarker.end}}]</h1>
             </div>
             <div id="markerpopuptext" class="panel-body">
-                <hr>
-                <div>
-                    <span class="set-label">3`</span>
-                    <span class="s3et" ng-repeat="s3et in s3 track by $index">{{s3et}}</span>
+                <div class="strand">
+                    <span class="strand-label">3`</span>
+                    <span class="strand-s3et btn btn-sm btn-danger" ng-repeat="s3et in s3 track by $index">{{s3et}}</span>
                 </div>
-                <div>
-                    <span class="set-label">5`</span>
-                    <span class="s5et" ng-repeat="s5et in s5 track by $index">{{s5et}}</span>
+                <div class="strand">
+                    <span class="strand-label">5`</span>
+                    <span class="strand-s5et btn btn-sm btn-primary" ng-repeat="s5et in s5 track by $index">{{s5et}}</span>
                 </div>
             </div>
         </div>
+
     </div>
-
-    
-
-
-        
 
     </body>
 <html>
