@@ -52,6 +52,7 @@ gulp.task(
                     path.join(process.cwd(),"node_modules/angularplasmid/src/js/services.js"),
                     path.join(process.cwd(),"node_modules/angularplasmid/src/js/directives.js"),
                     path.join(process.cwd(),"node_modules/bootstrap/dist/css/bootstrap.css"),
+                    path.join(process.cwd(),"node_modules/bootstrap/dist/css/bootstrap.css.map"),
                     //path.join(process.cwd(),"node_modules/angularplasmid/src/js/init.js"),
                 ]
             )
@@ -75,7 +76,7 @@ gulp.task(
     ['src'],
     function(cb) {
         return gulp
-            .src([path.join(process.cwd(), "app/**/*.{js,html,css,json,less}")])
+            .src([path.join(process.cwd(), "app/**/*.{js,html,css,json,less,map}")])
 
             .pipe(
                 rename(

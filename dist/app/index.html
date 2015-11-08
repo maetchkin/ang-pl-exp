@@ -23,21 +23,37 @@
 
     <div class="content container ng-scope" ng-controller="plasmidCtrl">
 
-        <plasmidapi name="api"></plasmidapi>
+        <div class="row">
+            <div class="col-md-6">
+                <plasmidapi name="api"></plasmidapi>
 
-        <plasmid sequencelength="{{length}}" plasmidheight="400" plasmidwidth="400">
-            <plasmidtrack trackstyle="fill:rgba(225,225,225,0.5)" radius="150">
-                <tracklabel text="{{label}}"        class="p-label"></tracklabel>
-                <tracklabel text="{{description}}"  class="p-description" vadjust="20"></tracklabel>
-                <trackscale interval="{{interval/10}}" style='stroke:#999' ticksize="3" direction="in" ></trackscale>
-                <trackscale interval="{{interval}}" style="stroke:#f00" direction="in" showlabels="1" labelstyle="fill:#999;stroke:none;text-anchor:middle;alignment-baseline:middle;font-size:10px"></trackscale>
-                <trackmarker markerclass="markerhover" ng-repeat="p in primers" start="{{p.start}}" end="{{p.end}}" style="fill:rgba(0,128,0,0.1)" wadjust="30" markerclick="markerClick($event,$marker)">
-                    <markerlabel labelclass="regionlabel" text="Primer" type="path" style="fill:rgba(0,128,0,.6)" vadjust="40"></markerlabel>
-                    <markerlabel type="path" labelstyle="font-size:7px; font-weight:400; kerning:1.1" text="{{p.s3.join('')}}" halign="center" vadjust="5"></markerlabel>
-                    <markerlabel type="path" labelstyle="font-size:7px; font-weight:400; kerning:1.1" text="{{p.s5.join('')}}" halign="center" vadjust="-15"></markerlabel>
-                </trackmarker>
-            </plasmidtrack>
-        </plasmid>
+                <plasmid sequencelength="{{length}}" plasmidheight="400" plasmidwidth="400">
+                    <plasmidtrack trackstyle="fill:rgba(225,225,225,0.5)" radius="150">
+                        <tracklabel text="{{label}}"        class="p-label"></tracklabel>
+                        <tracklabel text="{{description}}"  class="p-description" vadjust="20"></tracklabel>
+                        <trackscale interval="{{interval/10}}" style='stroke:#999' ticksize="3" direction="in" ></trackscale>
+                        <trackscale interval="{{interval}}" style="stroke:#f00" direction="in" showlabels="1" labelstyle="fill:#999;stroke:none;text-anchor:middle;alignment-baseline:middle;font-size:10px"></trackscale>
+                        <trackmarker markerclass="markerhover" ng-repeat="p in primers" start="{{p.start}}" end="{{p.end}}" style="fill:rgba(0,128,0,0.1)" wadjust="30" markerclick="markerClick($event,$marker)">
+                            <markerlabel labelclass="regionlabel" text="Primer" type="path" style="fill:rgba(0,128,0,.6)" vadjust="40"></markerlabel>
+                            <markerlabel type="path" labelstyle="font-size:7px; font-weight:400; kerning:1.1" text="{{p.s3.join('')}}" halign="center" vadjust="5"></markerlabel>
+                            <markerlabel type="path" labelstyle="font-size:7px; font-weight:400; kerning:1.1" text="{{p.s5.join('')}}" halign="center" vadjust="-15"></markerlabel>
+                        </trackmarker>
+                    </plasmidtrack>
+                </plasmid>
+
+             </div>
+            <div class="col-md-6">
+                
+            <form>
+              <div class="form-group">
+                <label for="seqLength">Sequence length</label>
+                <input type="number" class="form-control" id="seqLength" value="360" min="60" max="6000" step="60" required="required">
+              </div>
+              <button type="submit" class="btn btn-default">Generate</button>
+            </form>
+
+            </div>
+        </div>
 
         <div class="panel panel-info" ng-show="selectedmarker">
             <div class="panel-heading">
