@@ -8,7 +8,8 @@ var pkg         = require('./package.json'),
     del         = require('del'),
     path        = require('path'),
     archy       = require('gulp-archy'),
-    rename      = require("gulp-rename"),
+    rename      = require('gulp-rename'),
+    server      = require('gulp-express'),
     archyDebug = function(label){
         return archy(
             {
@@ -102,6 +103,18 @@ gulp.task(
     function(cb) {
         debug("Create nginx config");
         require("./tasks/server-nginx.js")(pkg.nginx);
+        cb();
+    }
+);
+
+gulp.task(
+    'dna-report',
+    function(cb) {
+        debug("dna-report");
+        server.run(
+            [path.join(process.cwd(), pkg.dna.server)],
+            {cwd: process.cwd(), livereload: false}
+        );
         cb();
     }
 );
@@ -206,5 +219,5 @@ gulp.task(
     }
 );
 
-gulp.task('run',        ['watch', 'nginx']);
+gulp.task('run',        ['watch', 'dna-report', 'nginx']);
 gulp.task('default',    ['build', 'nginx-conf']);

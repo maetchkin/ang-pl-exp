@@ -20,7 +20,7 @@ function checkPrimer(sub){
 
 function getPrimers(seq){
     var res = [],
-        len = 5;
+        len = 4;
 
     seq.forEach(
         function(pair, index, arr){
@@ -43,23 +43,46 @@ function getPrimers(seq){
         }
     );
 
-    /*console.log(
-        "res", res
-    );*/
+    console.log(
+        "getPrimers", res
+    );
 
     return res;
 }
 
 app.controller('plasmidCtrl', ['$http', '$scope', '$timeout', function plasmidCtrl ($http, $scope, $timeout) {
 
-    $scope.length   = 0;
-    $scope.interval = 0;
-    $scope.sequence = '';
-    $scope.label = 'loading...';
-    $scope.primers = [];
+    $scope.control = {
+        length: 60,
+        lengths: ['60','360','3600','6000','12000']
+    };
 
-    $http.jsonp('./dna.json').success(
-        function(data) {
+    $scope.clear = function(){
+        $scope.length   = 0;
+        $scope.interval = 0;
+        $scope.sequence = '';
+        $scope.label = 'loading...';
+        $scope.primers = [];
+    }
+
+    $scope.setSeqByLen = function(l){
+        $scope.control.length = l;
+    }
+
+    $scope.markerClick = function(event, marker){
+        $scope.$apply(function(){
+            console.log('$scope.data', $scope.data)
+            $scope.s3 = $scope.data.sequence[0].substring(marker.start, marker.end).split('');
+            $scope.s5 = $scope.data.sequence[1].substring(marker.start, marker.end).split('');
+            $scope.selectedmarker = marker;
+        });
+    }
+
+    $scope.dismissPopup = function(){
+        $scope.selectedmarker = null;
+    }
+
+    function parseData(data){
             $scope.data = data;
             $scope.description = 'data calculation';
 
@@ -77,7 +100,7 @@ app.controller('plasmidCtrl', ['$http', '$scope', '$timeout', function plasmidCt
                     $scope.interval = $scope.length / 12;
                     var m = Math.pow(10, ($scope.sequence.length + "").length - 2 );
                     $scope.interval = Math.floor( $scope.interval / m ) * m;
-                    $scope.primers = getPrimers($scope.sequence);;
+                    $scope.primers = getPrimers($scope.sequence);
                     $scope.$apply();
 
                 },
@@ -86,20 +109,23 @@ app.controller('plasmidCtrl', ['$http', '$scope', '$timeout', function plasmidCt
                 $scope.data.sequence[1].split("")
             );
         }
+
+    $scope.clear();
+
+    $scope.$watch(
+        "control.length",
+        function(){
+            $http.get(
+                './dna-report/generate?length=' + $scope.control.length
+            ).success(
+                parseData
+            )
+        }
     );
 
-    $scope.markerClick = function(event, marker){
-        $scope.$apply(function(){
-            console.log('$scope.data', $scope.data)
-            $scope.s3 = $scope.data.sequence[0].substring(marker.start, marker.end).split('');
-            $scope.s5 = $scope.data.sequence[1].substring(marker.start, marker.end).split('');
-            $scope.selectedmarker = marker;
-        });
-    }
+    /*$http.jsonp('./dna.json').success(
 
-    $scope.dismissPopup = function(){
-        $scope.selectedmarker = null;
-    }
+    );*/
 
 
 }]);

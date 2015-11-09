@@ -24,7 +24,10 @@
     <div class="content container ng-scope" ng-controller="plasmidCtrl">
 
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-xs-10">
+
+                <h5>result</h5>
+
                 <plasmidapi name="api"></plasmidapi>
 
                 <plasmid sequencelength="{{length}}" plasmidheight="400" plasmidwidth="400">
@@ -42,16 +45,28 @@
                 </plasmid>
 
              </div>
-            <div class="col-md-6">
+            <div class="col-xs-2">
                 
-            <form>
-              <div class="form-group">
-                <label for="seqLength">Sequence length</label>
-                <input type="number" class="form-control" id="seqLength" value="360" min="60" max="6000" step="60" required="required">
-              </div>
-              <button type="submit" class="btn btn-default">Generate</button>
-            </form>
+                <h5>length</h5>
 
+                <div class="btn-group-vertical">
+                    <button
+                        class="btn"
+                        ng-class="control.length==l ? 'btn-success': 'btn-default'"
+                        ng-repeat="l in control.lengths"
+                        type="button"
+                        ng-click="setSeqByLen(l)"
+                    >
+                        {{l}}
+                    </button>
+                </div>
+                <!-- <form>
+                  <div class="form-group">
+                    <label for="seqLength">Sequence length</label>
+                    <input type="number" class="form-control" id="seqLength" value="360" min="60" max="6000" step="60" required="required">
+                  </div>
+                  <button type="submit" class="btn btn-default">Generate</button>
+                </form> -->
             </div>
         </div>
 
