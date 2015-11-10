@@ -47,6 +47,7 @@ gulp.task(
         return gulp
             .src(
                 [
+                    path.join(process.cwd(),"node_modules/jquery/dist/jquery.js"),
                     path.join(process.cwd(),"node_modules/less/dist/less.js"),
                     path.join(process.cwd(),"node_modules/angular/angular.js"),
                     path.join(process.cwd(),"node_modules/angularplasmid/src/js/declare.js"),

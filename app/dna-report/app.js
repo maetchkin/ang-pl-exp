@@ -11,10 +11,10 @@ app.get('*', function (req, res) {
         {
             "id": "Rnd" + length,
             "description": "Random sequence",
-            "sequence": [
-                seq,
-                dna.complStrand(seq)
-            ]
+            "sequence": {
+                "s5": seq,
+                "s3": dna.complStrand(seq)
+            }
         }
     );
 })
