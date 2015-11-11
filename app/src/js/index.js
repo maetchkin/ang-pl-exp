@@ -113,6 +113,12 @@ app.controller('plasmidCtrl', ['$http', '$scope', '$timeout', function plasmidCt
         $scope.setSelectedPrimers();
     }
 
+    $scope.subSequenceReverse = function(){
+        var from = $scope.subSequence.from;
+        $scope.subSequence.from = $scope.subSequence.to;
+        $scope.subSequence.to = from;
+    }
+
     $scope.setSelectedPrimers = function(primer){
         var res = [];
 

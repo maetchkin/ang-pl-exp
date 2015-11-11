@@ -64,7 +64,8 @@
                             ></markerlabel>
                             <markerlabel
                                 text="{{p.start}}"
-                                style="font-size:13px; font-weight:400; fill:#999;"
+                                class="markerprimer"
+                                ng-class="{'markerprimer-to': p===subSequence.to, 'markerprimer-from': p===subSequence.from}"
                                 vadjust="25" hadjust="0" valign="inner"
                             ></markerlabel>
                         </trackmarker>
@@ -109,6 +110,7 @@
                         <button
                         class="btn btn-xs btn-default"
                         type="button" ng-show="subSequence.to"
+                        ng-click="subSequenceReverse()"
                         >rev</button>
 
                     <button

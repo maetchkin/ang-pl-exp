@@ -9,7 +9,7 @@ app.get('*', function (req, res) {
 
     res.json(
         {
-            "id": "Rnd" + length,
+            "id": length + "n",
             "description": "Random sequence",
             "sequence": {
                 "s5": seq,
