@@ -2,7 +2,7 @@
 
 "use strict";
 
-var app = angular.module('vixis', ['angularplasmid']);
+var app = angular.module('Plasmid', ['angularplasmid']);
 
 function checkPrimer(sub){
     var pc_s3 = sub.map(function(e){ return e[0] }),
@@ -44,12 +44,9 @@ function getPrimer (s5, s3, primer){
 }
 
 function getPrimers(s5, s3, primers){
-
     this.clearPrimers();
     this.$apply();
-
     var cb = getPrimer.bind(this, s5, s3);
-
     for (var i = 0; i < primers.length; i++) {
         setTimeout(cb, 0, primers[i]);
     };
@@ -59,19 +56,21 @@ app.controller('plasmidCtrl', ['$http', '$scope', '$timeout', function plasmidCt
 
     $scope.control = {
         length: 600,
-        lengths: [60,360,600,1200,3600,6000,12000]
+        lengths: [60,360,600,1200,3600,6000,12000,360000,1200000]
     };
 
     $scope.clearPrimers = function(){
         $scope.primers = [];
         $scope.selectedPrimerGroups = {};
         $scope.selectedPrimers = [];
+        $scope.subSequence = { from: null, to: null};
     }
     $scope.clear = function(){
         $scope.length   = 0;
         $scope.interval = 0;
         $scope.sequence = '';
         $scope.label = 'loading...';
+        $scope.focusedPrimerGroup = null;
         $scope.clearPrimers();
     }
 
@@ -79,11 +78,22 @@ app.controller('plasmidCtrl', ['$http', '$scope', '$timeout', function plasmidCt
         $scope.control.length = l;
     }
 
-    $scope.markerClick = function(event, marker){
+    $scope.markerClick = function(marker){
         $scope.$apply(function(){
-            $scope.s3 = $scope.data.sequence[0].substring(marker.start, marker.end).split('');
-            $scope.s5 = $scope.data.sequence[1].substring(marker.start, marker.end).split('');
-            $scope.selectedmarker = marker;
+            var ss = $scope.subSequence;
+            if( ss.from ){
+                if (ss.from === marker) {
+                    ss.to = ss.from = null;
+                } else if( ss.to === marker ){
+                    ss.to = null;
+                } else {
+                    ss.to = marker;
+                }
+            } else {
+                ss.from = marker;
+            }
+
+            //console.log($scope.subSequence);
         });
     }
 
@@ -94,9 +104,12 @@ app.controller('plasmidCtrl', ['$http', '$scope', '$timeout', function plasmidCt
     $scope.selectPrimerGroup = function(item){
         var group = item.name;
         $scope.selectedPrimerGroups[group]
-            = item.name in $scope.selectedPrimerGroups
+            = group in $scope.selectedPrimerGroups
                 ? !$scope.selectedPrimerGroups[group]
                 : true;
+
+        $scope.focusedPrimerGroup = $scope.selectedPrimerGroups[group] ? group : null;
+
         $scope.setSelectedPrimers();
     }
 
@@ -165,10 +178,17 @@ app.controller('plasmidCtrl', ['$http', '$scope', '$timeout', function plasmidCt
         $scope.primersMatrix = result.data;
     }
 
+    function setRestrictionEnzymes(result){
+        $scope.restrictionEnzymes = result.data;
+    }
+
 
     $http.get('./primers.json')
         .then(setPrimersMatrix)
         .then($scope.clear);
+
+    $http.get('./RestrictionEnzymes.json')
+        .then(setRestrictionEnzymes)
 
     $scope.$watch(
         "control.length",
