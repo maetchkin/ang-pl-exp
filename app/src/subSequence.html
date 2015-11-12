@@ -1,21 +1,17 @@
 <div class="sub-sequence">
     
-    <div class="sub-sequence__s5">
-        <button
-            class="btn btn-xs" ng-class="classRestriction( 's5', $index)"
-            ng-repeat="n in seq.s5 track by $index"
-        >{{n}}</button>
-    </div>
+    <span class="sub-sequence__elem" ng-repeat="n in (_s5 = ( seq.s5 | limitTo:1250) ) track by $index">
+        <div class="sub-sequence__s5">
+            <button class="btn btn-xs" ng-class="classRestriction( 's5', $index)">{{n}}</button>
+        </div>
 
-    <div class="sub-sequence__scale">
-        <span class="label label-primary" ng-repeat="n in seq.s5 track by $index">{{$index + seq.start}}</span>
-    </div>
+        <div class="sub-sequence__scale">
+            <span class="label label-primary">{{$index + seq.start}}</span>
+        </div>
 
-    <div class="sub-sequence__s3">
-        <button
-            class="btn btn-xs" ng-class="classRestriction( 's3', $index)"
-            ng-repeat="n in seq.s3 track by $index"
-        >{{n}}</button>
-    </div>
+        <div class="sub-sequence__s3">
+            <button class="btn btn-xs" ng-class="classRestriction( 's3', $index)">{{n}}</button>
+        </div>
+    </span>
 
 </div>

@@ -63,67 +63,44 @@ app.directive(
                 st: '='
             },
             templateUrl: 'subSequence.html',
+
             link: function(scope, element, attrs) {
 
-                var st = attrs.st;
+                /*var st = attrs.st;
                 scope.classRestriction = function(sX, i){
                     var cc = [
                             'btn-danger',
                             'btn-info',
                             'btn-default'
                         ],
-
-                        c = 2,
-
-                        r = -1;
+                        c = 2, r = -1;
 
                     if(scope.seq.restriction){
                         r = scope.seq.restriction.indexOf('^');
                         r = sX === 's5' ? r : scope.seq.restriction.length - 1 - r;
                     }
-
-
-
-
-
                     if (r > -1){
-
                         c = (i >= r) ? 1 : 0;
-
                         if (sX === 's3'){
                             c = !c;
                         }
-
                         if (st === 'to'){
                             c = !c;
                         }
-
                     } else {
                         c = (sX === 's5') ? 1 : 0;
                     }
-
-
-
-
                     return cc[ c+0 ];
-                }
+                }*/
 
-                scope.$watch('seq', function(seq) {
+                scope.$watch('seq', function PFUNC(seq) {
                     if(!seq){
                         return;
                     }
-
                     seq.length = seq.end - seq.start;
                     seq.length = seq.length < 0 ? seq.length * -1 : seq.length;
-
-                    var src_s5 = scope.$parent.data.sequence.s5.split(""),
-                        src_s3 = scope.$parent.data.sequence.s3.split("");
-
-                    seq.s5 = src_s5.slice(seq.start, seq.end);//seq.restriction.replace('^','');
-                    seq.s3 = src_s3.slice(seq.start, seq.end);//seq.s5.split("").reverse().join("");
-
-
-                    //console.log('seq', seq, scope.$parent);
+                    seq.s5 = scope.$parent.data.sequence.s5.substring( seq.start, seq.end );
+                    seq.s3 = scope.$parent.data.sequence.s3.substring( seq.start, seq.end );
                 });
             }
         };
