@@ -52,6 +52,85 @@ function getPrimers(s5, s3, primers){
     };
 }
 
+app.directive(
+    'subSequence', function(){
+
+        return {
+            replace: true,
+            restrict: 'E',
+            scope: {
+                seq: '=',
+                st: '='
+            },
+            templateUrl: 'subSequence.html',
+            link: function(scope, element, attrs) {
+
+                var st = attrs.st;
+                scope.classRestriction = function(sX, i){
+                    var cc = [
+                            'btn-danger',
+                            'btn-info',
+                            'btn-default'
+                        ],
+
+                        c = 2,
+
+                        r = -1;
+
+                    if(scope.seq.restriction){
+                        r = scope.seq.restriction.indexOf('^');
+                        r = sX === 's5' ? r : scope.seq.restriction.length - 1 - r;
+                    }
+
+
+
+
+
+                    if (r > -1){
+
+                        c = (i >= r) ? 1 : 0;
+
+                        if (sX === 's3'){
+                            c = !c;
+                        }
+
+                        if (st === 'to'){
+                            c = !c;
+                        }
+
+                    } else {
+                        c = (sX === 's5') ? 1 : 0;
+                    }
+
+
+
+
+                    return cc[ c+0 ];
+                }
+
+                scope.$watch('seq', function(seq) {
+                    if(!seq){
+                        return;
+                    }
+
+                    seq.length = seq.end - seq.start;
+                    seq.length = seq.length < 0 ? seq.length * -1 : seq.length;
+
+                    var src_s5 = scope.$parent.data.sequence.s5.split(""),
+                        src_s3 = scope.$parent.data.sequence.s3.split("");
+
+                    seq.s5 = src_s5.slice(seq.start, seq.end);//seq.restriction.replace('^','');
+                    seq.s3 = src_s3.slice(seq.start, seq.end);//seq.s5.split("").reverse().join("");
+
+
+                    //console.log('seq', seq, scope.$parent);
+                });
+            }
+        };
+
+    }
+);
+
 app.controller('plasmidCtrl', ['$http', '$scope', '$timeout', function plasmidCtrl ($http, $scope, $timeout) {
 
     $scope.control = {
@@ -63,7 +142,7 @@ app.controller('plasmidCtrl', ['$http', '$scope', '$timeout', function plasmidCt
         $scope.primers = [];
         $scope.selectedPrimerGroups = {};
         $scope.selectedPrimers = [];
-        $scope.subSequence = { from: null, to: null};
+        $scope.subSequence = { from: null, seq: null, to: null};
     }
     $scope.clear = function(){
         $scope.length   = 0;
@@ -130,9 +209,10 @@ app.controller('plasmidCtrl', ['$http', '$scope', '$timeout', function plasmidCt
                             p.matches.map(
                                 function(m){
                                     return {
+                                        restriction: p.restriction,
                                         name: p.name,
                                         start: m,
-                                        end: m+1
+                                        end: m + p.restriction.replace('^','').length
                                     };
                                 }
                             )
@@ -205,6 +285,22 @@ app.controller('plasmidCtrl', ['$http', '$scope', '$timeout', function plasmidCt
             .then(
                 parseData
             );
+        }
+    );
+
+    $scope.$watchGroup(
+        ['subSequence.from', 'subSequence.to'],
+        function(){
+            try {
+                $scope.subSequence.seq
+                    = $scope.subSequence && $scope.subSequence.from && $scope.subSequence.to
+                    ? {start: $scope.subSequence.from.end + 1 , end: $scope.subSequence.to.start + 1}
+                    : null;
+            } catch(e) {
+
+            }
+
+
         }
     );
 

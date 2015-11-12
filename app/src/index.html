@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta charset="utf-8" />
         <title>Experiment</title>
 
                 
@@ -16,127 +17,150 @@
         <script src="./static/less.js" type="text/javascript"></script>
 
     </head>
-    <body ng-app="Plasmid" class="ng-scope">
+    <body ng-app="Plasmid" class="ng-scope" ng-clock>
 
     <div class="page-header">
       <h1>Plasmid</h1>
     </div>
 
-    <div class="content container ng-scope" ng-controller="plasmidCtrl">
+    <div class="layout ng-scope" ng-controller="plasmidCtrl">
+    
+        <div class="content container">
 
-        <div class="row">
+            <div class="row">
 
-            <div class="col-xs-1">
-                <div class="btn-group-vertical">
-                    <h6 class="page-header-label">Sequence size</h6>
-                    <button
-                        class="btn btn-xs"
-                        ng-class="control.length==l ? 'btn-success': 'btn-default'"
-                        ng-repeat="l in control.lengths"
-                        type="button"
-                        ng-click="setSeqByLen(l)"
-                    >
-                        {{l}}
-                    </button>
-                </div>
-            </div>
-
-            <div class="col-xs-7">
-                <plasmidapi name="api"></plasmidapi>
-                <plasmid sequencelength="{{length}}" plasmidheight="300" plasmidwidth="350">
-                    <plasmidtrack trackstyle="fill:rgba(225,225,225,0.5)" radius="100">
-                        <tracklabel text="{{label}}"        class="p-label"></tracklabel>
-                        <tracklabel text="{{description}}"  class="p-description" vadjust="20"></tracklabel>
-                        <trackscale interval="{{interval/10}}" style='stroke:#999' ticksize="3" direction="in" ></trackscale>
-                        <trackscale interval="{{interval}}" style="stroke:#f00" direction="in" showlabels="1" labelstyle="fill:#999;stroke:none;text-anchor:middle;alignment-baseline:middle;font-size:10px"></trackscale>
-                        <trackmarker
-                            markerclass="markerhover"
-                            ng-repeat="p in selectedPrimers"
-                            start="{{p.start}}"
-                            end="{{p.end}}"
-                            style="fill:#ffffff"
-                            wadjust="0"
-                            markerclick="markerClick(p)"
+                <div class="col-xs-1">
+                    <div class="btn-group-vertical">
+                        <h6 class="page-header-label">Sequence size</h6>
+                        <button
+                            class="btn btn-xs"
+                            ng-class="control.length==l ? 'btn-success': 'btn-default'"
+                            ng-repeat="l in control.lengths"
+                            type="button"
+                            ng-click="setSeqByLen(l)"
                         >
-                            <markerlabel       
-                                vadjust="15" hadjust="0" valign="inner"
-                                showline="1" linevadjust="5" linevadjust="0"
-                            ></markerlabel>
-                            <markerlabel
-                                text="{{p.start}}"
-                                class="markerprimer"
-                                ng-class="{'markerprimer-to': p===subSequence.to, 'markerprimer-from': p===subSequence.from}"
-                                vadjust="25" hadjust="0" valign="inner"
-                            ></markerlabel>
-                        </trackmarker>
-
-                        <trackmarker
-                            markerclass="markerhover"
-                            ng-repeat="p in selectedPrimers"
-                            start="{{subSequence.from.start}}"
-                            end="{{subSequence.to.start}}"
-                            style="stroke:rgba(64,192,64,0.4);fill:rgba(192,255,192,0.4)"
-                            wadjust="-20"
-                            ng-show="subSequence.from && subSequence.to"
-                        >
-
-                        </trackmarker>
-                    </plasmidtrack>
-                </plasmid>
-            </div>
-
-            <div class="col-xs-1">
-                <h6 class="page-header-label">Restrictions</h6>
-                <div class="btn-group-vertical">
-                    <button
-                        class="btn btn-xs"
-                        ng-class="selectedPrimerGroups[pr.name] ? 'btn-success': 'btn-default'"
-                        ng-repeat="pr in primers | filter: primerHasMatches"
-                        type="button"
-                        ng-click="selectPrimerGroup(pr)"
-                    >{{pr.name}}</button>
+                            {{l}}
+                        </button>
+                    </div>
                 </div>
-            </div>
 
-            <div class="col-xs-1" ng-show="subSequence.from">
-                <h6 class="page-header-label">Slice</h6>
-                <div class="btn-group-vertical">
-                    <button
-                        class="btn btn-xs btn-info"
-                        ng-show="subSequence.from"
-                        type="button"
-                    >from [{{subSequence.from.start}}]</button>
+                <div class="col-xs-7">
+                    <plasmidapi name="api"></plasmidapi>
+                    <plasmid sequencelength="{{length}}" plasmidheight="300" plasmidwidth="350">
+                        <plasmidtrack trackstyle="fill:rgba(225,225,225,0.5)" radius="100">
+                            <tracklabel text="{{label}}"        class="p-label"></tracklabel>
+                            <tracklabel text="{{description}}"  class="p-description" vadjust="20"></tracklabel>
+                            <trackscale
+                                interval="{{interval/10}}" ticksize="3" direction="in"
+                                style='stroke:#111' ></trackscale>
+                            <trackscale
+                                interval="{{interval}}" direction="in" showlabels="1"
+                                style="stroke:#f00"
+                                labelstyle="fill:#999; stroke:none; text-anchor:middle; alignment-baseline:middle; font-size:10px;"
+                            ></trackscale>
+                            <trackmarker
+                                markerclass="markerhover"
+                                ng-repeat="p in selectedPrimers"
+                                start="{{p.start}}"
+                                end="{{p.end}}"
+                                style="fill:#ffffff"
+                                wadjust="0"
+                                markerclick="markerClick(p)"
+                            >
+                                <markerlabel       
+                                    vadjust="15" hadjust="0" valign="inner"
+                                    showline="1" linevadjust="5" linevadjust="0"
+                                ></markerlabel>
+                                <markerlabel
+                                    text="{{p.start}}"
+                                    class="markerprimer"
+                                    ng-class="{'markerprimer-to': p===subSequence.to, 'markerprimer-from': p===subSequence.from}"
+                                    vadjust="25" hadjust="0" valign="inner"
+                                ></markerlabel>
+                            </trackmarker>
+
+                            <trackmarker
+                                markerclass="markerhover"
+                                ng-repeat="p in selectedPrimers"
+                                start="{{subSequence.from.end}}"
+                                end="{{subSequence.to.start}}"
+                                style="stroke:rgba(64,192,64,0.4);fill:rgba(192,255,192,0.4)"
+                                wadjust="-20"
+                                ng-show="subSequence.from && subSequence.to"
+                            >
+
+                            </trackmarker>
+                        </plasmidtrack>
+                    </plasmid>
+                </div>
+
+                <div class="col-xs-2">
+                    <h6 class="page-header-label">Restrictions&nbsp;▼</h6>
+                    <div class="btn-group-vertical">
+                        <button
+                            class="btn btn-xs"
+                            ng-class="selectedPrimerGroups[pr.name] ? 'btn-success': 'btn-default'"
+                            ng-repeat="pr in primers | filter: primerHasMatches"
+                            type="button"
+                            ng-click="selectPrimerGroup(pr)"
+                        >{{pr.name}}</button>
+                    </div>
+                </div>
+
+                <div class="col-xs-1" ng-show="subSequence.from">
+                    <h6 class="page-header-label">Slice</h6>
+                    <div class="btn-group-vertical">
+                        <button
+                            class="btn btn-xs  btn-default"
+                            ng-show="subSequence.from"
+                            type="button"
+                        >from <span class="label label-primary">{{subSequence.from.start}}</span></button>
+
+                            <button
+                            class="btn btn-xs btn-default"
+                            type="button" ng-show="subSequence.to"
+                            ng-click="subSequenceReverse()"
+                            >rev</button>
 
                         <button
-                        class="btn btn-xs btn-default"
-                        type="button" ng-show="subSequence.to"
-                        ng-click="subSequenceReverse()"
-                        >rev</button>
-
-                    <button
-                        class="btn btn-xs btn-danger"
-                        ng-show="subSequence.to"
-                        type="button"
-                    >to [{{subSequence.to.end}}]</button>
+                            class="btn btn-xs  btn-default"
+                            ng-show="subSequence.to"
+                            type="button"
+                        >to <span class="label label-danger">{{subSequence.to.end}}</span></button>
+                    </div>
                 </div>
+
             </div>
 
         </div>
 
-        <div class="panel panel-info" ng-show="focusedPrimerGroup">
-            <div class="panel-heading">
-                <h1 id="markerpopupheader" class="panel-title">{{focusedPrimerGroup}}</h1>
+        
+        <div class="slice" ng-show="subSequence.from">
+            <div class="sub sub-from">
+                <h6 class="page-header-label">from</h6>
+                <div class="sub-viewer">
+                    <sub-sequence seq="subSequence.from" st="from"/>
+                </div>
+                <span>{{subSequence.from.restriction}}</span>
             </div>
-            <div class="focusedPrimerGroup">
-                <b>{{restrictionEnzymes[focusedPrimerGroup.toLowerCase()].target_site}} </b>
-                <br>
-                <span><b>source</b>: {{restrictionEnzymes[focusedPrimerGroup.toLowerCase()].source}} </span>
-                <br>
-                <span><b>organism</b>: {{restrictionEnzymes[focusedPrimerGroup.toLowerCase()].organism}} </span>
+            <div class="sub sub-seq">
+                <h6 class="page-header-label" ng-show="subSequence.to">seq</h6>
+                <div class="sub-viewer" ng-show="subSequence.to">
+                    <sub-sequence seq="subSequence.seq" st="seq"/>
+                </div>
             </div>
+            <div class="sub sub-to">
+                <h6 class="page-header-label" ng-show="subSequence.to">to</h6>
+                <div class="sub-viewer" ng-show="subSequence.to">
+                    <sub-sequence seq="subSequence.to" st="to"/>
+                </div>
+                <span>{{subSequence.to.restriction}}</span>
+            <div>
         </div>
 
     </div>
+
+    
 
     </body>
 <html>
