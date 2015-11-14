@@ -44,32 +44,42 @@ gulp.task(
     ['clean'],
     function(cb) {
 
+
+        var destPath  = "dist/app/static",
+            npmPath     = "node_modules",
+            fs   = path.join(process.cwd(), npmPath)    ,
+            node_modules = [
+
+                fs + "/jquery/dist/jquery.js",
+                fs + "/less/dist/less.js",
+                fs + "/angular/angular.js",
+
+                fs + "/angularplasmid/src/js/declare.js",
+                fs + "/angularplasmid/src/js/services.js",
+                fs + "/angularplasmid/src/js/directives.js",
+
+                fs + "/bootstrap/dist/css/bootstrap.css",
+                fs + "/bootstrap/dist/css/bootstrap.css.map"
+            ];
+
         return gulp
             .src(
-                [
-                    path.join(process.cwd(),"node_modules/jquery/dist/jquery.js"),
-                    path.join(process.cwd(),"node_modules/less/dist/less.js"),
-                    path.join(process.cwd(),"node_modules/angular/angular.js"),
-                    path.join(process.cwd(),"node_modules/angularplasmid/src/js/declare.js"),
-                    path.join(process.cwd(),"node_modules/angularplasmid/src/js/services.js"),
-                    path.join(process.cwd(),"node_modules/angularplasmid/src/js/directives.js"),
-                    path.join(process.cwd(),"node_modules/bootstrap/dist/css/bootstrap.css"),
-                    path.join(process.cwd(),"node_modules/bootstrap/dist/css/bootstrap.css.map"),
-                    //path.join(process.cwd(),"node_modules/angularplasmid/src/js/init.js"),
-                ]
+                node_modules
             )
             .pipe(
                 rename(
                     function(src){
-                        src.dirname = src.dirname.replace('node_modules/','');
+                        src.dirname = src.dirname.replace(path + "/","");
                     }
                 )
             )
-            .pipe(archyDebug('src'))
+
             .pipe(
-                gulp.dest(
-                    path.join(process.cwd(), "dist/app/static")
-                )
+                archyDebug('src')
+            )
+
+            .pipe(
+                gulp.dest(destPath)
             );
     }
 );
@@ -102,7 +112,7 @@ gulp.task(
     'nginx-conf',
     ['build'],
     function(cb) {
-        debug("Create nginx config");
+        gutil.log(gutil.colors.green("Create nginx config"));
         require("./tasks/server-nginx.js")(pkg.nginx);
         cb();
     }
@@ -111,7 +121,7 @@ gulp.task(
 gulp.task(
     'dna-report',
     function(cb) {
-        debug("dna-report");
+        gutil.log(gutil.colors.green("NPM-DNA started on " + pkg.nginx.config.dna.host + ":" + pkg.nginx.config.dna.port ));
         server.run(
             [path.join(process.cwd(), pkg.dna.server)],
             {cwd: process.cwd(), livereload: false}

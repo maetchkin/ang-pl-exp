@@ -66,7 +66,7 @@ app.directive(
 
             link: function(scope, element, attrs) {
 
-                /*var st = attrs.st;
+                var st = attrs.st;
                 scope.classRestriction = function(sX, i){
                     var cc = [
                             'btn-danger',
@@ -91,7 +91,7 @@ app.directive(
                         c = (sX === 's5') ? 1 : 0;
                     }
                     return cc[ c+0 ];
-                }*/
+                }
 
                 scope.$watch('seq', function PFUNC(seq) {
                     if(!seq){

@@ -1,10 +1,12 @@
 {
-  "name": "ap",
-  "version": "0.2.1",
-  "description": "experiment with angularplasmid",
+  "name": "plasmid-sequence-viewer",
+  "version": "0.2.2",
+  "description": "Experimental viewer plasmids, sites of restriction and DNA sequences. Also contains nginx configuration to proxy npm-dna api methods. Powered by angularplasmid",
   "main": "dist/index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "gulp",
+    "start": "gulp; gulp run;"
   },
   "author": "Anton Kirshanov <maetchkin@gmail.com> (https://github.com/maetchkin)",
   "license": "MIT",
